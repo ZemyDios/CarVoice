@@ -15,6 +15,7 @@ public class CarController : MonoBehaviour
         // Subscribe to VoiceCommands events
         if (VoiceCommands.Instance != null)
             VoiceCommands.Instance.OnCommandDetected += OnVoiceCommand;
+        Debug.Log("Subscribed");
     }
 
     private void OnDisable()
@@ -41,11 +42,11 @@ public class CarController : MonoBehaviour
                 break;
 
             case VoiceCommandType.Left:
-                steeringInput -= intensity;
+                steeringInput -= intensity * 0.5f; // Make steering slower for more precision
                 break;
 
             case VoiceCommandType.Right:
-                steeringInput += intensity;
+                steeringInput += intensity * 0.5f; // Make steering slower for more precision
                 break;
 
             case VoiceCommandType.Straight:
