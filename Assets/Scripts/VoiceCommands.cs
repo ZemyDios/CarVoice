@@ -48,7 +48,6 @@ public class VoiceCommands : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
     }
 
@@ -57,12 +56,12 @@ public class VoiceCommands : MonoBehaviour
         // Map spoken text => Command enum
         commandMap = new Dictionary<string, VoiceCommandType>
         {
-            { "acelera",   VoiceCommandType.Accelerate },
-            { "frena",     VoiceCommandType.Brake },
+            { "acelera", VoiceCommandType.Accelerate },
+            { "frena", VoiceCommandType.Brake },
             { "izquierda", VoiceCommandType.Left },
-            { "derecha",   VoiceCommandType.Right },
-            { "recto",     VoiceCommandType.Straight },
-            { "para",   VoiceCommandType.Stop },
+            { "derecha", VoiceCommandType.Right },
+            { "recto", VoiceCommandType.Straight },
+            { "para", VoiceCommandType.Stop },
         };
 
         recognizer = new KeywordRecognizer(commandMap.Keys.ToArray());

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -23,13 +24,22 @@ public class LevelManager : MonoBehaviour
     public event Action OnLevelPaused;
     public event Action OnLevelFinished;
 
+    private GameObject car;
     private float time = 0;
+
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private GameObject carPrefab;
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private GameObject pauseMenu;
 
     private void Awake()
     {
         Instance = this;
-        ChangeState(LevelState.Running);
+        CurrentState = LevelState.Countdown;
+        ChangeState(LevelState.PreStart);
     }
 
     private void Update()
@@ -39,6 +49,12 @@ public class LevelManager : MonoBehaviour
             time += Time.deltaTime;
             // Update timer UI
             if (timerText) timerText.text = (time / 60).ToString("00") + ":" + (time % 60).ToString("00");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (CurrentState == LevelState.Running) PauseLevel();
+            else if (CurrentState == LevelState.Paused) UnPause();
         }
     }
 
@@ -50,25 +66,108 @@ public class LevelManager : MonoBehaviour
         switch (newState)
         {
             case LevelState.PreStart:
-
+                PreStart();
                 break;
 
             case LevelState.Countdown:
                 OnCountdownStarted?.Invoke();
+                StartCoroutine(StartCountdownAnimation());
                 break;
 
             case LevelState.Running:
                 OnLevelStarted?.Invoke();
+                if (timerText) timerText.gameObject.SetActive(true);
+                car.GetComponent<CarController>().enabled = true; // Activate car controller
                 break;
 
             case LevelState.Paused:
                 OnLevelPaused?.Invoke();
+                if (timerText) timerText.gameObject.SetActive(false);
+                pauseMenu.SetActive(true);
+                Time.timeScale = 0;
                 break;
 
             case LevelState.Finished:
                 OnLevelFinished?.Invoke();
+                car.GetComponent<CarController>().enabled = false; // Deactivate car controller
                 break;
         }
+    }
+
+    private void PreStart()
+    {
+        car = Instantiate(carPrefab, spawnPoint.position, Quaternion.identity);
+        car.GetComponent<CarController>().enabled = false; // Deactivate car controller
+
+        ChangeState(LevelState.Countdown);
+    }
+
+    /// <summary>
+    /// Displays a countdown sequence: 3, 2, 1, GO!
+    /// with scale + fade animation.
+    /// </summary>
+    private IEnumerator StartCountdownAnimation()
+    {
+        yield return StartCoroutine(AnimateCount("3"));
+        yield return StartCoroutine(AnimateCount("2"));
+        yield return StartCoroutine(AnimateCount("1"));
+        yield return StartCoroutine(AnimateCount("GO!"));
+
+        countdownText.gameObject.SetActive(false);
+
+        StartLevel();
+    }
+
+    /// <summary>
+    /// Animates a single countdown number:
+    /// - Fade in
+    /// - Scale pop
+    /// - Fade out
+    /// </summary>
+    private IEnumerator AnimateCount(string text)
+    {
+        countdownText.text = text;
+        countdownText.alpha = 0f;
+        countdownText.transform.localScale = Vector3.one * 0.2f;
+
+        countdownText.gameObject.SetActive(true);
+
+        float t = 0f;
+
+        // Fade + scale in
+        while (t < 0.3f)
+        {
+            t += Time.deltaTime;
+            float p = t / 0.3f;
+
+            countdownText.alpha = p;
+            countdownText.transform.localScale = Vector3.Lerp(Vector3.one * 0.2f, Vector3.one, p);
+
+            yield return null;
+        }
+
+        // Stay visible for a moment
+        yield return new WaitForSeconds(0.4f);
+
+        // Fade out
+        t = 0f;
+        while (t < 0.3f)
+        {
+            t += Time.deltaTime;
+            float p = t / 0.3f;
+
+            countdownText.alpha = 1f - p;
+
+            yield return null;
+        }
+    }
+
+    public void UnPause()
+    {
+        if (CurrentState != LevelState.Paused) return;
+        pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+        ChangeState(LevelState.Running);
     }
 
     // Public methods to change State
