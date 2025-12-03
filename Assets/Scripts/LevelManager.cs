@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum LevelState
 {
@@ -34,6 +35,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject winMenu;
 
     private void Awake()
     {
@@ -103,7 +105,10 @@ public class LevelManager : MonoBehaviour
 
             case LevelState.Finished:
                 OnLevelFinished?.Invoke();
+                if (timerText) timerText.gameObject.SetActive(false);
                 car.GetComponent<CarController>().enabled = false; // Deactivate car controller
+                winMenu.SetActive(true);
+                if (timerText) winMenu.transform.Find("Time").GetComponent<TextMeshProUGUI>().text = "Time: " + timerText.text;
                 break;
         }
     }
@@ -191,6 +196,17 @@ public class LevelManager : MonoBehaviour
             if (CurrentState == LevelState.Running) PauseLevel();
             else if (CurrentState == LevelState.Paused) UnPause();
         }
+    }
+
+    public void RestartLevel()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     // Public methods to change State
