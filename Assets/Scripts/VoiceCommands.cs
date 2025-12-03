@@ -11,7 +11,8 @@ public enum VoiceCommandType
     Left,
     Right,
     Straight,
-    Stop
+    Stop,
+    Pause
 }
 
 /// <summary>
@@ -62,6 +63,7 @@ public class VoiceCommands : MonoBehaviour
             { "derecha", VoiceCommandType.Right },
             { "recto", VoiceCommandType.Straight },
             { "para", VoiceCommandType.Stop },
+            { "pausa", VoiceCommandType.Pause },
         };
 
         recognizer = new KeywordRecognizer(commandMap.Keys.ToArray());

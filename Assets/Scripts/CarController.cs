@@ -15,7 +15,6 @@ public class CarController : MonoBehaviour
         // Subscribe to VoiceCommands events
         if (VoiceCommands.Instance != null)
             VoiceCommands.Instance.OnCommandDetected += OnVoiceCommand;
-        Debug.Log("Subscribed");
     }
 
     private void OnDisable()

@@ -42,13 +42,27 @@ public class LevelManager : MonoBehaviour
         ChangeState(LevelState.PreStart);
     }
 
+    private void OnEnable()
+    {
+        // Subscribe to VoiceCommands events
+        if (VoiceCommands.Instance != null)
+            VoiceCommands.Instance.OnCommandDetected += OnVoiceCommand;
+    }
+
+    private void OnDisable()
+    {
+        // Unsubscribe
+        if (VoiceCommands.Instance != null)
+            VoiceCommands.Instance.OnCommandDetected -= OnVoiceCommand;
+    }
+
     private void Update()
     {
         if (CurrentState == LevelState.Running)
         {
             time += Time.deltaTime;
             // Update timer UI
-            if (timerText) timerText.text = (time / 60).ToString("00") + ":" + (time % 60).ToString("00");
+            if (timerText) timerText.text = ((int)time / 60).ToString("00") + ":" + ((int)time % 60).ToString("00");
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -168,6 +182,15 @@ public class LevelManager : MonoBehaviour
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         ChangeState(LevelState.Running);
+    }
+
+    private void OnVoiceCommand(VoiceCommandType command, float intensity)
+    {
+        if (command == VoiceCommandType.Pause)
+        {
+            if (CurrentState == LevelState.Running) PauseLevel();
+            else if (CurrentState == LevelState.Paused) UnPause();
+        }
     }
 
     // Public methods to change State
