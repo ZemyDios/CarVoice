@@ -809,7 +809,7 @@ GameObject:
   - component: {fileID: 614414744}
   m_Layer: 0
   m_Name: LevelManager
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -827,7 +827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   spawnPoint: {fileID: 476204946}
-  carPrefab: {fileID: 2768171935335808460, guid: 983109628de28cb4d95feac7f6d18b30, type: 3}
+  carPrefab: {fileID: 1410783873115680069, guid: 28df4ec76e4d5574eb50f9ce758f80d7, type: 3}
   countdownText: {fileID: 1314487516}
   timerText: {fileID: 113231892}
   pauseMenu: {fileID: 802926025}
