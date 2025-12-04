@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 public class MicConfiguration : MonoBehaviour
 {
-    private const string PREF_MIC = "SelectedMic";
-    private const string PREF_DB = "MicDynamicRange";
-    private const string PREF_GAIN = "MicGain";
+    public const string PREF_MIC = "SelectedMic";
+    public const string PREF_DB = "MicDynamicRange";
+    public const string PREF_GAIN = "MicGain";
 
     [Header("UI")]
     [SerializeField] private TMP_Dropdown micDropdown;

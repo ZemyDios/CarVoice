@@ -23,6 +23,14 @@ public class VoiceInput : MonoBehaviour
         AudioServices.RegisterVoiceInput(this);
     }
 
+    private void Start()
+    {
+        volumeTracker.autoGain = false;
+        // Load player preferences
+        volumeTracker.gain = PlayerPrefs.GetFloat(MicConfiguration.PREF_GAIN, 10f);
+        volumeTracker.dynamicRange = PlayerPrefs.GetFloat(MicConfiguration.PREF_DB, 25f);
+    }
+
     void Update()
     {
         // Sampling timer
