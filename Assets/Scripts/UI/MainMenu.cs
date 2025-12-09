@@ -6,9 +6,9 @@ public class MainMenu : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject mainPanel;
 
-    public void PlayGame()
+    public void LoadLevel(string level)
     {
-        SceneManager.LoadScene("TestLevelScene");
+        SceneManager.LoadScene(level);
     }
 
     public void QuitGame()

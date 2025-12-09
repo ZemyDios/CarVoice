@@ -34,6 +34,7 @@ public class LevelManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI speedometer;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject winMenu;
 
@@ -62,9 +63,14 @@ public class LevelManager : MonoBehaviour
     {
         if (CurrentState == LevelState.Running)
         {
-            time += Time.deltaTime;
             // Update timer UI
+            time += Time.deltaTime;
             if (timerText) timerText.text = ((int)time / 60).ToString("00") + ":" + ((int)time % 60).ToString("00");
+
+            // Update speedometer
+            float speed = car.GetComponent<Rigidbody>().linearVelocity.magnitude;
+            speed *= 3.6f; // To km/h
+            if (speedometer)speedometer.text = Mathf.RoundToInt(speed) + " km/h";
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -93,12 +99,14 @@ public class LevelManager : MonoBehaviour
             case LevelState.Running:
                 OnLevelStarted?.Invoke();
                 if (timerText) timerText.gameObject.SetActive(true);
+                if (speedometer) speedometer.gameObject.SetActive(true);
                 car.GetComponent<CarController>().enabled = true; // Activate car controller
                 break;
 
             case LevelState.Paused:
                 OnLevelPaused?.Invoke();
                 if (timerText) timerText.gameObject.SetActive(false);
+                if (speedometer) speedometer.gameObject.SetActive(false);
                 pauseMenu.SetActive(true);
                 Time.timeScale = 0;
                 break;
@@ -106,6 +114,7 @@ public class LevelManager : MonoBehaviour
             case LevelState.Finished:
                 OnLevelFinished?.Invoke();
                 if (timerText) timerText.gameObject.SetActive(false);
+                if (speedometer) speedometer.gameObject.SetActive(true);
                 car.GetComponent<CarController>().enabled = false; // Deactivate car controller
                 winMenu.SetActive(true);
                 if (timerText) winMenu.transform.Find("Time").GetComponent<TextMeshProUGUI>().text = "Time: " + timerText.text;

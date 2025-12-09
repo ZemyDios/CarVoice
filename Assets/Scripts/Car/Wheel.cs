@@ -27,7 +27,6 @@ public class Wheel : MonoBehaviour
 
     private float engineInput = 0f;  // Smoothed input
 
-
     private void Start()
     {
         carRigidBody = transform.parent.gameObject.GetComponent<Rigidbody>();
