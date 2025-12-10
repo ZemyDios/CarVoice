@@ -7,8 +7,15 @@ public class CarController : MonoBehaviour
     [Header("Steering Behavior")]
     [SerializeField] private float steeringSmoothSpeed = 5f; // smooth wheel turning
 
+    private AudioSource audio;
+
     private float accelerationInput; // -1 to 1
     private float steeringInput;     // -1 to 1
+
+    private void Awake()
+    {
+        audio = GetComponent<AudioSource>();
+    }
 
     private void OnEnable()
     {
@@ -60,6 +67,8 @@ public class CarController : MonoBehaviour
         // Clamp to allowed range
         accelerationInput = Mathf.Clamp(accelerationInput, -1f, 1f);
         steeringInput = Mathf.Clamp(steeringInput, -1f, 1f);
+
+        audio.Play();
     }
 
     private void FixedUpdate()
